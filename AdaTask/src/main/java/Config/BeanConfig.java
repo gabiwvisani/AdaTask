@@ -5,9 +5,13 @@ import Domain.PersonalTask;
 import Repository.Repository;
 import Repository.TaskRepository;
 
-public class BeanConfig {
-    public Repository<BaseTask> taskRepository() {
+import java.util.ArrayList;
+import java.util.List;
+
+public class BeanConfig <?> {
+    public Repository<?> taskRepository() {
         return new TaskRepository();
     }
+
 
 }
