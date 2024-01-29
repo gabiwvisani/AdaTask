@@ -1,8 +1,5 @@
 package Controller;
 
-import Domain.PersonalTask;
-import Repository.TaskRepository;
-
 import java.awt.*;
 import java.util.Scanner;
 import Domain.BaseTask;
@@ -19,8 +16,8 @@ abstract public class ControllerBase <T extends BaseTask> {
         String novaDescricao = scanner.nextLine();
         T.setDescricao(novaDescricao);
     }
-    private T encontrarTarefa(Integer id, List<> list) {
-        for (T task : TaskRepository.list) {
+    private T encontrarTarefa(Integer id, List<T> list) {
+        for (T task : list) {
             if (task.getIdTask().equals(id)) {
                 return task;
             }

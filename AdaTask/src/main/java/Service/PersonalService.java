@@ -13,20 +13,24 @@ public class PersonalService implements Service<PersonalTask>{
         this.taskRepository = taskRepository;
     }
 
-    public void adicionarTask(PersonalTask task,  ArrayList<PersonalTask> list) {
+    public void adicionarTask(PersonalTask task,  List<PersonalTask> list) {
         taskRepository.adicionar(task, list);
         System.out.println("Task adicionada com sucesso.");
     }
 
-    public  void deletarTask(Integer idTask, ArrayList<PersonalTask> taskList, Main mainInstance) {
-        if (validacaoDeletar(idTask,taskList )) {
+    public  void deletarTask(Integer idTask, List<PersonalTask> taskList) {
+        //if (validacaoDeletar(idTask,taskList )) {
             taskRepository.deletar(idTask,taskList);
-        } else {
-            mainInstance.negarDeletarTarefa();
-        }
+       // } else {
+       //     negarDeletarTarefa();
+       // }
     }
 
-    public  Boolean validacaoDeletar(Integer idTask, ArrayList<PersonalTask> list) {
+    public  Boolean validacaoDeletar(Integer idTask, List<PersonalTask> list) {
         return taskRepository.getTaskById(idTask, list) != null;
+    }
+
+    public List<PersonalTask> getTasksList() {
+        return taskRepository.tasksListPersonal;
     }
 }

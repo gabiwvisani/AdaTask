@@ -1,11 +1,13 @@
 package Service;
 
 import Controller.Main;
+import Domain.PersonalTask;
 import Domain.WorkTask;
 import Repository.StudyRepository;
 import Repository.WorkRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WorkService implements Service<WorkTask>{
     private final WorkRepository<WorkTask> taskRepository;
@@ -28,5 +30,8 @@ public class WorkService implements Service<WorkTask>{
 
     public  Boolean validacaoDeletar(Integer idTask, ArrayList<WorkTask> list) {
         return taskRepository.getTaskById(idTask, list) != null;
+    }
+    public List<WorkTask> getTasksList() {
+        return taskRepository.tasksListWork;
     }
 }

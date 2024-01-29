@@ -2,10 +2,12 @@ package Service;
 
 import Controller.Main;
 //import Domain.PersonalTask;
+import Domain.PersonalTask;
 import Domain.StudyTask;
 import Repository.StudyRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StudyService implements Service<StudyTask>{
     private final StudyRepository<StudyTask> taskRepository;
@@ -28,5 +30,8 @@ public class StudyService implements Service<StudyTask>{
 
     public  Boolean validacaoDeletar(Integer idTask, ArrayList<StudyTask> list) {
         return taskRepository.getTaskById(idTask, list) != null;
+    }
+    public List<StudyTask> getTasksList() {
+        return taskRepository.tasksListStudy;
     }
 }

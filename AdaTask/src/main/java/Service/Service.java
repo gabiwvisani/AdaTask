@@ -2,14 +2,16 @@ package Service;
 
 import Controller.Main;
 import Domain.BaseTask;
+import Domain.PersonalTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface Service <T extends BaseTask> {
-    public void adicionarTask(T task,  ArrayList<T> list) ;
+    public List<T> getTasksList();
+    public void adicionarTask(T task,  List<T> list) ;
 
-    public  void deletarTask(Integer idTask, ArrayList<T> taskList, Main mainInstance) ;
+    public  void deletarTask(Integer idTask, List<T> taskList) ;
 
-    public  Boolean validacaoDeletar(Integer idTask, ArrayList<T> taskList) ;
+    public  Boolean validacaoDeletar(Integer idTask, List<T> taskList) ;
 }

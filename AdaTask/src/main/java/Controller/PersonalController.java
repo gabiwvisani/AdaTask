@@ -15,9 +15,24 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PersonalController extends ControllerBase<PersonalTask> {
+    private final PersonalService personalService;
+    private final Main app;
 
+    public PersonalController(PersonalService personalService, Main app) {
+        this.personalService = personalService;
+        this.app = app;
+    }
+
+    private PersonalTask encontrarTarefa(Integer id, List<PersonalTask> list) {
+        for (PersonalTask task : list) {
+            if (task.getIdTask().equals(id)) {
+                return task;
+            }
+        }
+        return null;
+    }
     public  PersonalTask editarTarefa(Integer idEditar) {
-        PersonalTask task = encontrarTarefa(idEditar, PersonalRepository.tasksListPersonal);
+        PersonalTask task = encontrarTarefa(idEditar, personalService.getTasksList());
         if (task != null) {
             // Aqui você solicita as informações atualizadas da tarefa ao usuário
             // e as atribui à tarefa antes de retorná-la.
@@ -40,9 +55,16 @@ public class PersonalController extends ControllerBase<PersonalTask> {
     // Métodos auxiliares
 
     public void deletarTarefa(Integer idDeletar) {
-        PersonalService.deletarTask(idDeletar,  PersonalRepository.tasksListPersonal);
+        if(personalService.validacaoDeletar(idDeletar, personalService.getTasksList() )) {
+            personalService.deletarTask(idDeletar, personalService.getTasksList());
+        }else{
+            negarDeletarTarefa();
+        }
     }
-
+    public  void negarDeletarTarefa(){
+        System.out.println("Por favor digite um idTarefa que exista.");
+        app.deletarTask();
+    }
 
     public void verificarTarefa(List<PersonalTask> personalTasks){
         if (personalTasks.isEmpty()) {
@@ -93,6 +115,6 @@ public class PersonalController extends ControllerBase<PersonalTask> {
         LocalDateTime dataAtual = LocalDateTime.now();
 
         PersonalTask personalTask =  new PersonalTask(envolveOutrasPessoas, pessoasEnvolvidas, 0, dataAtual, descricao, quantidadeMinutos, prioridade, false);
-        PersonalService.adicionarTask(personalTask, PersonalRepository.tasksListPersonal);
+        personalService.adicionarTask(personalTask, personalService.getTasksList());
     }
 }
