@@ -2,13 +2,9 @@ package Controller;
 
 import java.util.Scanner;
 
-import Domain.BaseTask;
-import Domain.PersonalTask;
-import Repository.Repository;
-import Repository.TaskRepository;
-import Service.TaskService;
-
-import javax.management.ObjectInstance;
+import Repository.PersonalRepository;
+import Repository.WorkRepository;
+import Repository.StudyRepository;
 
 public class Main {
     public static void main(String[] args) {
@@ -62,17 +58,17 @@ private String tipoTarefa;
         this.tipoTarefa = scan.nextLine().toLowerCase().trim();
     }
 
-    public static void verificarTarefa(){
+    public  void verificarTarefa(){
         setTipoTarefa();
         switch (this.tipoTarefa) {
             case "pessoal":
-                PersonalController.verificarTarefa(TaskRepository.tasksListPersonal);
+                PersonalController.verificarTarefa(PersonalRepository.tasksListPersonal);
                 break;
             case "estudos":
-                StudyController.verificarTarefa(TaskRepository.tasksListStudy);
+                StudyController.verificarTarefa(StudyRepository.tasksListStudy);
                 break;
             case "trabalho":
-                WorkController.verificarTarefa(TaskRepository.tasksListWork);
+                WorkController.verificarTarefa(WorkRepository.tasksListWork);
                 break;
             case "menu":
                 executar();

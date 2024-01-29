@@ -1,22 +1,22 @@
 package Repository;
 
-import Domain.StudyTask;
+import Domain.BaseTask;
+import Domain.WorkTask;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-public class WorkRepository extends TaskRepository{
-    final public ArrayList<WorkTask> tasksListStudy = new ArrayList<>();
-    @Override
+public class WorkRepository<W extends BaseTask> extends TaskRepository<WorkTask>{
+    final public ArrayList<WorkTask> tasksListWork = new ArrayList<>();
+    /*@Override
     public void adicionar(StudyTask task, ArrayList<StudyTask> list) {
         list.add(task);
         System.out.println("Task adicionada com sucesso.");
     }
     //@Override
-    public void deletar(Integer idTask, ArrayList<StudyTask> list) {
-        Iterator<StudyTask> iterator = list.iterator();
+    public void deletar(Integer idTask, ArrayList<WorkTask> list) {
+        Iterator<WorkTask> iterator = list.iterator();
         while (iterator.hasNext()) {
-            StudyTask task = iterator.next();
+            WorkTask task = iterator.next();
             if (task.getIdTask().equals(idTask)) {
                 iterator.remove();
                 System.out.println("Task removida com sucesso.");
@@ -25,17 +25,17 @@ public class WorkRepository extends TaskRepository{
         }
     }
     @Override
-    public void editar(StudyTask task, ArrayList<StudyTask> list) {
+    public void editar(WorkTask task, ArrayList<WorkTask> list) {
         //editar();
         System.out.println("editado");
     }
 
-    public StudyTask getTaskById(Integer idTask, Class<StudyTask> taskClass, ArrayList<StudyTask> list) {
-        for (StudyTask task : list) {
+    public WorkTask getTaskById(Integer idTask, Class<WorkTask> taskClass, ArrayList<StudyTask> list) {
+        for (WorkTask task : list) {
             if (task.getIdTask().equals(idTask) && taskClass.isInstance(task)) {
                 return taskClass.cast(task);
             }
         }
         return null;
-    }
+    }*/
 }

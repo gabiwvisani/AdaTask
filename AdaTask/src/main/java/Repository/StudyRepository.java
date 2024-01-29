@@ -1,14 +1,13 @@
 package Repository;
 
-import Domain.PersonalTask;
+import Domain.BaseTask;
 import Domain.StudyTask;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-public class StudyRepository extends TaskRepository<StudyTask>{
+public class StudyRepository<S extends BaseTask> extends TaskRepository<StudyTask>{
     final public ArrayList<StudyTask> tasksListStudy = new ArrayList<>();
-    @Override
+    /*@Override
     public void adicionar(StudyTask task, ArrayList<StudyTask> list) {
         list.add(task);
         System.out.println("Task adicionada com sucesso.");
@@ -38,5 +37,5 @@ public class StudyRepository extends TaskRepository<StudyTask>{
             }
         }
         return null;
-    }
+    }*/
 }

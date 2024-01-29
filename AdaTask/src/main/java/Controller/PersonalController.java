@@ -5,18 +5,19 @@ import Domain.PersonalTask;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
+import Repository.PersonalRepository;
 import Repository.TaskRepository;
-import Service.TaskService;
+import Service.PersonalService;
 
 import javax.sound.midi.ControllerEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PersonalController extends Controller {
+public class PersonalController extends ControllerBase<PersonalTask> {
 
     public  PersonalTask editarTarefa(Integer idEditar) {
-        PersonalTask task = encontrarTarefa(idEditar, TaskRepository.tasksListPersonal);
+        PersonalTask task = encontrarTarefa(idEditar, PersonalRepository.tasksListPersonal);
         if (task != null) {
             // Aqui você solicita as informações atualizadas da tarefa ao usuário
             // e as atribui à tarefa antes de retorná-la.
@@ -39,7 +40,7 @@ public class PersonalController extends Controller {
     // Métodos auxiliares
 
     public void deletarTarefa(Integer idDeletar) {
-        TaskService.deletarTask(idDeletar,  TaskRepository.tasksListPersonal);
+        PersonalService.deletarTask(idDeletar,  PersonalRepository.tasksListPersonal);
     }
 
 
@@ -92,6 +93,6 @@ public class PersonalController extends Controller {
         LocalDateTime dataAtual = LocalDateTime.now();
 
         PersonalTask personalTask =  new PersonalTask(envolveOutrasPessoas, pessoasEnvolvidas, 0, dataAtual, descricao, quantidadeMinutos, prioridade, false);
-        TaskService.adicionarTask(personalTask, TaskRepository.tasksListPersonal);
+        PersonalService.adicionarTask(personalTask, PersonalRepository.tasksListPersonal);
     }
 }
