@@ -10,25 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkService implements Service<WorkTask>{
-    private final WorkRepository<WorkTask> taskRepository;
-    public WorkService(WorkRepository<WorkTask> taskRepository) {
+    private final WorkRepository taskRepository;
+    public WorkService(WorkRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
-    public void adicionarTask(WorkTask task,  ArrayList<WorkTask> list) {
+    public void adicionarTask(WorkTask task,  List<WorkTask> list) {
         taskRepository.adicionar(task, list);
         System.out.println("Task adicionada com sucesso.");
     }
 
-    public  void deletarTask(Integer idTask, ArrayList<WorkTask> taskList, Main mainInstance) {
-        if (validacaoDeletar(idTask,taskList )) {
+    public  void deletarTask(Integer idTask, List<WorkTask> taskList) {
+       // if (validacaoDeletar(idTask,taskList )) {
             taskRepository.deletar(idTask,taskList);
-        } else {
-            mainInstance.negarDeletarTarefa();
-        }
+       // } else {
+       //     mainInstance.negarDeletarTarefa();
+      //  }
     }
 
-    public  Boolean validacaoDeletar(Integer idTask, ArrayList<WorkTask> list) {
+    public  Boolean validacaoDeletar(Integer idTask, List<WorkTask> list) {
         return taskRepository.getTaskById(idTask, list) != null;
     }
     public List<WorkTask> getTasksList() {

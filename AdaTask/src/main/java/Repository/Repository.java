@@ -1,4 +1,4 @@
-package Repository;
+/*package Repository;
 
 import Domain.BaseTask;
 import Service.TaskService;
@@ -14,4 +14,4 @@ public interface Repository <T>{
       <T extends BaseTask> T getTaskById(Integer idTask, Class<T> taskClass);
 
 
-}
+}*/

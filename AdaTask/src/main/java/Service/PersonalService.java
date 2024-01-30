@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonalService implements Service<PersonalTask>{
-    private final PersonalRepository<PersonalTask> taskRepository;
-    public PersonalService(PersonalRepository<PersonalTask> taskRepository) {
+    private final PersonalRepository taskRepository;
+    public PersonalService(PersonalRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 

@@ -6,6 +6,8 @@ public class PersonalTask extends BaseTask {
     private Boolean envolveOutrasPessoas;
     private String pessoasEnvolvidas;
 
+
+
     public PersonalTask(Boolean envolveOutrasPessoas,String pessoasEnvolvidas,  Integer idTask, LocalDateTime dataTask, String descricao, Integer quantidadeMinutosTask, String prioridade, Boolean finalizado){
         super(idTask, dataTask, descricao, quantidadeMinutosTask, prioridade, finalizado);
         this.envolveOutrasPessoas=envolveOutrasPessoas;

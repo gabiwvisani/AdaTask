@@ -10,15 +10,20 @@ abstract public class BaseTask {
     protected Integer quantidadeMinutosTask;
     protected String prioridade;
     protected Boolean finalizado;
+    private static int lastId = 0;
 
     public BaseTask(Integer idTask, LocalDateTime dataTask, String descricao,
                     Integer quantidadeMinutosTask, String prioridade, Boolean finalizado) {
-        this.idTask = idTask;
+       // this.idTask = idTask;
+        this.idTask = idTask == 0 ? generateId() : idTask;
         this.dataTask = dataTask;
         this.descricao = descricao;
         this.quantidadeMinutosTask = quantidadeMinutosTask;
         this.prioridade = prioridade;
         this.finalizado = finalizado;
+    }
+    private static int generateId() {
+        return ++lastId;
     }
 
     public LocalDateTime getDataTask() {

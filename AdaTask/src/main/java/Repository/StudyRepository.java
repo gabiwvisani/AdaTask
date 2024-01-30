@@ -5,7 +5,7 @@ import Domain.StudyTask;
 
 import java.util.ArrayList;
 
-public class StudyRepository<S extends BaseTask> extends TaskRepository<StudyTask>{
+public class StudyRepository extends TaskRepository<StudyTask>{
     final public ArrayList<StudyTask> tasksListStudy = new ArrayList<>();
     /*@Override
     public void adicionar(StudyTask task, ArrayList<StudyTask> list) {

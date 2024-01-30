@@ -3,40 +3,58 @@ package Controller;
 import Domain.PersonalTask;
 import Domain.StudyTask;
 import Repository.TaskRepository;
-import Service.TaskService;
+import Service.PersonalService;
+import Service.StudyService;
+//import Service.TaskService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class StudyController extends ControllerBase {
+public class StudyController implements ControllerBase<StudyTask> {
+    private final StudyService studyService;
+   // private final Main app;
+
+    public StudyController(StudyService studyService) {
+        this.studyService = studyService;
+       // this.app = app;
+    }
     public  StudyTask editarTarefa(Integer idEditar) {
-        StudyTask task = encontrarTarefa(idEditar, TaskRepository.tasksListStudy);
+        StudyTask task = encontrarTarefa(idEditar, studyService.getTasksList());
         if (task != null) {
-            editaDescricao();
+            //editaDescricao();
             return task;
         } else {
             System.out.println("Tarefa não encontrada para edição.");
             return null;
         }
     }
-    public void deletarTarefa(Integer idDeletar) {
-        TaskService.deletarTask(idDeletar,  TaskRepository.tasksListStudy);
+    public void deletarTarefa(Integer idDeletar){
+        if(studyService.validacaoDeletar(idDeletar, studyService.getTasksList() )) {
+            studyService.deletarTask(idDeletar, studyService.getTasksList());
+        }else{
+            negarDeletarTarefa();
+        }
     }
-    public void verificarTarefa(List<StudyTask> studyTasks) {
-        if (studyTasks.isEmpty()) {
+    public void negarDeletarTarefa(){
+        System.out.println("Por favor digite um idTarefa que exista.");
+       // app.deletarTask();
+    }
+    public void verificarTarefa() {
+        if (studyService.getTasksList().isEmpty()) {
             System.out.println("Não há tarefas de estudo cadastradas.");
         } else {
             System.out.println("Tarefas de estudo cadastradas:");
-            for (StudyTask task : studyTasks) {
+            for (StudyTask task : studyService.getTasksList()) {
                 exibirInformacoesTarefa(task);
             }
         }
     }
 
-    private void exibirInformacoesTarefa(StudyTask task) {
+    public void exibirInformacoesTarefa(StudyTask task) {
         System.out.println("ID: " + task.getIdTask());
         System.out.println("Descrição: " + task.getDescricao());
         System.out.println("Minutos: " + task.getQuantidadeMinutosTask());
@@ -64,10 +82,15 @@ public class StudyController extends ControllerBase {
         System.out.println("Informe a matéria de estudo:");
         String materia = scanner.nextLine();
 
-        LocalDateTime dataAtual = LocalDateTime.now();
+        System.out.println("Informe a data limite da tarefa (formato: dd/MM/yyyy):");
+        String dataInput = scanner.next();
+        dataInput=dataInput +" 00:00";
+        LocalDateTime dataTarefa = LocalDateTime.parse(dataInput, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
-        StudyTask studyTask =   new StudyTask(materia, 0, dataAtual, descricao, quantidadeMinutos, prioridade, false);
-        TaskService.adicionarTask(studyTask, TaskRepository.tasksListStudy);
+
+        StudyTask studyTask =   new StudyTask(materia, 0, dataTarefa, descricao, quantidadeMinutos, prioridade, false);
+
+        studyService.adicionarTask(studyTask, studyService.getTasksList());
 
     }
 }

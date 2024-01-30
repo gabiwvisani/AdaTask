@@ -5,29 +5,56 @@ import java.util.Scanner;
 import Repository.PersonalRepository;
 import Repository.WorkRepository;
 import Repository.StudyRepository;
+import Service.PersonalService;
+import Service.StudyService;
+import Service.WorkService;
 
 public class Main {
     public static void main(String[] args) {
-        Main app =new Main();
+        Main app =new Main(new PersonalController(new PersonalService(new PersonalRepository())),
+                new StudyController(new StudyService(new StudyRepository())),
+                new WorkController(new WorkService(new WorkRepository())));
        // TaskRepository rep=new TaskRepository();
-        app.executar();
+        app.iniciar();
 
     }
 private String tipoAcao;
 private String tipoTarefa;
+    private final PersonalController personalController;
+    private final StudyController studyController;
+    private final WorkController workController;
+
+    public Main(PersonalController personalController, StudyController studyController,
+                WorkController workController ) {
+        this.personalController = personalController;
+        this.studyController = studyController;
+        this.workController = workController;
+    }
     public String getTipoAcao() {
         return tipoAcao;
     }
     public void setTipoAcao() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Você gostaria de verificar, adicionar, deletar ou editar? Ou digite 'sair' para encerrar.");
-        this.tipoAcao = scan.nextLine().toLowerCase().trim();
-        scan.close();
+        try {
+            System.out.println("Escolha uma ação: verificar, adicionar, deletar, editar ou sair.");
+            this.tipoAcao = scan.nextLine().toLowerCase().trim();
+
+        }catch (Exception e){
+            System.out.println("Opção não válida.");
+            setTipoAcao();
+        }
+    }
+    public void iniciar(){
+        System.out.println("-------------------------------------");
+        System.out.println("               AdaTask               ");
+        System.out.println("-------------------------------------");
+        executar();
     }
 
     public void executar() {
-        setTipoAcao();
+        System.out.println("-------------------------------------");
         while (true) {
+        setTipoAcao();
             switch (this.tipoAcao) {
                 case "verificar":
                     verificarTarefa();
@@ -46,6 +73,7 @@ private String tipoTarefa;
                     System.exit(0);
                 default:
                     System.out.println("Por favor, digite uma das opções: verificar, adicionar, deletar, editar ou sair.");
+                    setTipoAcao();
             }
         }
     }
@@ -54,81 +82,80 @@ private String tipoTarefa;
     }
     public void setTipoTarefa() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Você gostaria realizar sua ação em qual tipo de tarefas? Pessoal, estudos ou trabalho? Ou digite menu para voltar para o começo.");
-        this.tipoTarefa = scan.nextLine().toLowerCase().trim();
+        try {
+            System.out.println("Escolha o tipo de tarefa: pessoal, estudos, trabalho ou menu para voltar.");
+            this.tipoTarefa = scan.nextLine().toLowerCase().trim();
+        }catch (Exception e){
+            System.out.println("Opção não válida.");
+            setTipoAcao();
+        }
     }
 
     public  void verificarTarefa(){
         setTipoTarefa();
         switch (this.tipoTarefa) {
             case "pessoal":
-                PersonalController.verificarTarefa(PersonalRepository.tasksListPersonal);
+                personalController.verificarTarefa();
                 break;
             case "estudos":
-                StudyController.verificarTarefa(StudyRepository.tasksListStudy);
+                studyController.verificarTarefa();
                 break;
             case "trabalho":
-                WorkController.verificarTarefa(WorkRepository.tasksListWork);
+                workController.verificarTarefa();
                 break;
             case "menu":
                 executar();
                 break;
-            default:
-                System.out.println("Por favor, digite uma opção válida.");
-                verificarTarefa();
         }
     }
     public void adicionarTarefa(){
         setTipoTarefa();
         switch (this.tipoTarefa){
             case "pessoal":
-            PersonalController.adicionarTarefa();
+                personalController.adicionarTarefa();
             break;
             case"estudos":
-            StudyController.adicionarTarefa();
+                studyController.adicionarTarefa();
             break;
             case "trabalho":
-            WorkController.adicionarTarefa();
+                workController.adicionarTarefa();
             break;
             case "menu":
-            executar();
+                executar();
             break;
-            default:
-            System.out.println("Por favor digite uma das opções: Todas, pessoal, estudos, trabalho ou menu.");
-            adicionarTarefa();
         }
     }
 
     public void deletarTask(){
         setTipoTarefa();
         Scanner scan = new Scanner(System.in);
-        System.out.println("Qual tarefa você gostaria de deletar? Digite o id da tarefa.");
         try{
+        System.out.println("Qual tarefa você gostaria de deletar? Digite o ID da tarefa.");
             Integer idDeletar = scan.nextInt();
             switch (this.tipoTarefa) {
                 case "pessoal":
-                    PersonalController.deletarTarefa(idDeletar);
+                    personalController.deletarTarefa(idDeletar);
                     break;
                 case "estudos":
-                    StudyController.deletarTarefa(idDeletar);
+                    studyController.deletarTarefa(idDeletar);
                     break;
                 case "trabalho":
-                    WorkController.deletarTarefa(idDeletar);
+                    workController.deletarTarefa(idDeletar);
                     break;
                 case "menu":
                     executar();
                     break;
             }
         }catch(Exception e){
-            System.out.println("Por favor digite um número inteiro.");
+            System.out.println("Por favor, digite uma opção válida.");
             deletarTask();
         }
 
     }
-    public  void negarDeletarTarefa(){
+   /* public  void negarDeletarTarefa(){
         System.out.println("Por favor digite um idTarefa que exista.");
         deletarTask();
-    }
+    }*/
     public  void editarTarefa(){
         setTipoTarefa();
         Scanner scan = new Scanner(System.in);
@@ -137,13 +164,13 @@ private String tipoTarefa;
             Integer idEditar = scan.nextInt();
             switch (this.tipoTarefa) {
                 case "pessoal":
-                    PersonalController.editarTarefa(idEditar);
+                    personalController.editarTarefa(idEditar);
                     break;
                 case "estudos":
-                    StudyController.editarTarefa(idEditar);
+                    studyController.editarTarefa(idEditar);
                     break;
                 case "trabalho":
-                    WorkController.editarTarefa(idEditar);
+                    workController.editarTarefa(idEditar);
                     break;
                 case "menu":
                     executar();

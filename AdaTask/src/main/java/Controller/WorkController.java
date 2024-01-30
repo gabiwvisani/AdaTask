@@ -4,19 +4,29 @@ import Domain.PersonalTask;
 import Domain.StudyTask;
 import Domain.WorkTask;
 import Repository.TaskRepository;
-import Service.TaskService;
+import Service.StudyService;
+//import Service.TaskService;
+import Service.WorkService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class WorkController extends ControllerBase {
+public class WorkController implements ControllerBase<WorkTask> {
+    private final WorkService workService;
+   // private final Main app;
+
+    public WorkController(WorkService workService) {
+        this.workService = workService;
+       // this.app = app;
+    }
     public WorkTask editarTarefa(Integer idEditar) {
-        WorkTask task = encontrarTarefa(idEditar, TaskRepository.tasksListWork);
+        WorkTask task = encontrarTarefa(idEditar, workService.getTasksList());
         if (task != null) {
-            editaDescricao();
+         //   editaDescricao();
             return task;
         } else {
             System.out.println("Tarefa não encontrada para edição.");
@@ -24,20 +34,28 @@ public class WorkController extends ControllerBase {
         }
     }
     public void deletarTarefa(Integer idDeletar) {
-        TaskService.deletarTask(idDeletar,  TaskRepository.tasksListWork);
+        if(workService.validacaoDeletar(idDeletar, workService.getTasksList() )) {
+            workService.deletarTask(idDeletar, workService.getTasksList());
+        }else{
+            negarDeletarTarefa();
+        }
     }
-    public void verificarTarefa(List<WorkTask> workTasks) {
-        if (workTasks.isEmpty()) {
+    public void negarDeletarTarefa(){
+        System.out.println("Por favor digite um idTarefa que exista.");
+        //app.deletarTask();
+    }
+    public void verificarTarefa() {
+        if (workService.getTasksList().isEmpty()) {
             System.out.println("Não há tarefas de trabalho cadastradas.");
         } else {
             System.out.println("Tarefas de trabalho cadastradas:");
-            for (WorkTask task : workTasks) {
+            for (WorkTask task : workService.getTasksList()) {
                 exibirInformacoesTarefa(task);
             }
         }
     }
 
-    private void exibirInformacoesTarefa(WorkTask task) {
+    public void exibirInformacoesTarefa(WorkTask task) {
         System.out.println("ID: " + task.getIdTask());
         System.out.println("Descrição: " + task.getDescricao());
         System.out.println("Minutos: " + task.getQuantidadeMinutosTask());
@@ -71,10 +89,15 @@ public class WorkController extends ControllerBase {
             colegasDeTarefa = scanner.nextLine();
         }
 
-        LocalDateTime dataAtual = LocalDateTime.now();
+        System.out.println("Informe a data limite da tarefa (formato: dd/MM/yyyy):");
+        String dataInput = scanner.next();
+        dataInput=dataInput +" 00:00";
+        LocalDateTime dataTarefa = LocalDateTime.parse(dataInput, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
-        WorkTask workTask =   new WorkTask(0, dataAtual, descricao, quantidadeMinutos, prioridade, false, envolveOutrosColegas, colegasDeTarefa);
-        TaskService.adicionarTask(workTask, TaskRepository.tasksListWork);
+
+        WorkTask workTask =   new WorkTask(0, dataTarefa, descricao, quantidadeMinutos, prioridade, false, envolveOutrosColegas, colegasDeTarefa);
+        //TaskService.adicionarTask(workTask, TaskRepository.tasksListWork);
+        workService.adicionarTask(workTask, workService.getTasksList());
 
     }
 }

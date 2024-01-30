@@ -1,4 +1,4 @@
-package Config;
+/*package Config;
 
 import Domain.BaseTask;
 import Domain.PersonalTask;
@@ -14,4 +14,4 @@ public class BeanConfig <?> {
     }
 
 
-}
+}*/

@@ -5,7 +5,7 @@ import Domain.PersonalTask;
 
 import java.util.ArrayList;
 
-public class PersonalRepository<P extends BaseTask> extends TaskRepository<PersonalTask>{
+public class PersonalRepository extends TaskRepository<PersonalTask>{
     final public ArrayList<PersonalTask> tasksListPersonal = new ArrayList<>();
     /*
     public void adicionar(PersonalTask task, ArrayList<PersonalTask> list) {
