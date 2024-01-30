@@ -5,6 +5,7 @@ import Domain.PersonalTask;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import Repository.PersonalRepository;
@@ -58,14 +59,36 @@ public class PersonalController implements ControllerBase<PersonalTask> {
                        }
                        if(dataTarefa.isBefore(LocalDateTime.now())) {
                         System.out.println("A data deve ser maior o igual a atual");
-                    }
-                    }
+                        }
                    }
-                    task.setDataTask(dataTarefa);
+                   task.setDataTask(dataTarefa);
                    break;
                case 3:
+                   Integer novaQuantidadeMinutosTask=-1;
+                   while(novaQuantidadeMinutosTask<0) {
+                       System.out.println("Quantidade de minutos necessários para concluir a tarefa: ");
+                       try {
+                           novaQuantidadeMinutosTask = scan.nextInt();
+                       }catch(Exception e) {
+                           System.out.println("Digite um inteiro maior ou igual a 0.");
+                       }
+                       if(novaQuantidadeMinutosTask<0) {
+                           System.out.println("Digite um inteiro maior ou igual a 0.");
+                       }
+                   }
+                   task.setQuantidadeMinutosTask(novaQuantidadeMinutosTask);
                    break;
                case 4:
+                   String novaprioridade ="";
+                   while(novaprioridade.equals("")) {
+                       System.out.println("Prioridade (baixa, média, alta): ");
+                       novaprioridade = scan.nextLine();
+                       if(!personalService.validacaoPrioricade(novaprioridade)){
+                            System.out.println("Digite baixa, média ou alta.");
+                            novaprioridade ="";
+                       }
+                   }
+                   task.setPrioridade(novaprioridade);
                    break;
                case 5:
                    break;
@@ -73,22 +96,13 @@ public class PersonalController implements ControllerBase<PersonalTask> {
                    break;
                case 7:
                    break;
+               default:
+                   throw new IllegalStateException("Valor inválido no campo " + campo);
            }
            }catch(Exception e){
                System.out.println("Opção inválida.");
                editarTarefa( idEditar);
            }
-            // Aqui você solicita as informações atualizadas da tarefa ao usuário
-            // e as atribui à tarefa antes de retorná-la.
-            // Exemplo:
-            // editaDescricao();
-            /*Scanner scanner = new Scanner(System.in);
-            System.out.println("Nova descrição: ");
-            String novaDescricao = scanner.nextLine();
-            task.setDescricao(novaDescricao);*/
-
-            // Faça o mesmo para outros atributos que você deseja editar.
-
             return task;
         } else {
             System.out.println("Tarefa pessoal não encontrada para edição.");
@@ -156,10 +170,22 @@ public class PersonalController implements ControllerBase<PersonalTask> {
             pessoasEnvolvidas = scanner.nextLine();
         }
 
-        System.out.println("Informe a data e hora limite da tarefa (formato: dd/MM/yyyy HH:mm):");
-        String dataInput = scanner.next();
-        LocalDateTime dataTarefa = LocalDateTime.parse(dataInput, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        LocalDateTime dataTarefa = null;
+        boolean dataValida = false;
 
+        while (!dataValida) {
+            try {
+                String dataInput = scanner.nextLine();
+                dataTarefa = LocalDateTime.parse(dataInput, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+                if (dataTarefa.isAfter(LocalDateTime.now()) || dataTarefa.isEqual(LocalDateTime.now())) {
+                    dataValida = true;
+                } else {
+                    System.out.println("A data e hora informadas devem ser maiores ou iguais à data e hora atual. Tente novamente:");
+                }
+            } catch (Exception e) {
+                System.out.println("Formato de data e hora inválido. Tente novamente (formato: dd/MM/yyyy HH:mm):");
+            }
+        }
 
         PersonalTask personalTask =  new PersonalTask(envolveOutrasPessoas, pessoasEnvolvidas, 0, dataTarefa, descricao, quantidadeMinutos, prioridade, false);
         personalService.adicionarTask(personalTask, personalService.getTasksList());
