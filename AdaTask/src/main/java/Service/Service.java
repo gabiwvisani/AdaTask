@@ -1,10 +1,7 @@
 package Service;
 
-import Controller.Main;
 import Domain.BaseTask;
-import Domain.PersonalTask;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Service <T extends BaseTask> {

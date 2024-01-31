@@ -1,13 +1,10 @@
 package Service;
 
-import Controller.Main;
 //import Domain.PersonalTask;
-import Domain.PersonalTask;
 import Domain.StudyTask;
 import Repository.StudyRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+        import java.util.List;
 
 public class StudyService implements Service<StudyTask>{
     private final StudyRepository taskRepository;

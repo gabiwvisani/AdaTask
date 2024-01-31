@@ -23,8 +23,8 @@ public class WorkController implements ControllerBase<WorkTask> {
                             ": \n1 - Descrição da tarefa\n2 - Data Limite\n" +
                             "3 - Quantidade de minutos necessários para concluir a tarefa\n" +
                             "4 - Prioridade (baixa, média, alta)\n5 - Task envolve outros colegas (true/false)\n" +
-                            "6 - Colegas envolvidos\n7 - A tarefa está finalizada (Sim ou Não)",
-                    "Opção inválida."
+                            "6 - Colegas envolvidos\n7 - A tarefa está finalizada (Sim ou Não)\n",
+                    "Opção inválida.\n"
             );
 
                 switch (campo) {
@@ -36,8 +36,8 @@ public class WorkController implements ControllerBase<WorkTask> {
                         LocalDateTime dataTarefa=LocalDateTime.of(2024,2,3,0,0);
                         while(!workService.isWeekday(dataTarefa)) {
                              dataTarefa = validateDateTimeInput(
-                                    "Nova data para tarfa: (formato: dd/MM/yyyy HH:mm):",
-                                    "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm"
+                                    "Nova data para tarfa: (formato: dd/MM/yyyy HH:mm): ",
+                                    "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm \n"
                             );
                              if(!workService.isWeekday(dataTarefa)){
                                  System.out.println("É importante ter um tempo de descanso do trabalho, por isso não é permitido marcar tarefas de trabalho no final de semana.");
@@ -132,25 +132,25 @@ public class WorkController implements ControllerBase<WorkTask> {
     public void adicionarTarefa(){
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Criando uma tarefa de trabalho:");
-        String descricao = validateStringInput("Informe a descrição da tarefa:", "");
-        int quantidadeMinutos = validatePositiveIntegerInput("Informe a quantidade de minutos para a tarefa:", "Digite um número inteiro");
+        System.out.println("Criando uma tarefa de trabalho: ");
+        String descricao = validateStringInput("Informe a descrição da tarefa: ", "");
+        int quantidadeMinutos = validatePositiveIntegerInput("Informe a quantidade de minutos para a tarefa: ", "Digite um número inteiro");
         String prioridade = validateStringPrioridadeInput("Informe a prioridade da tarefa (baixa, média, alta): ", "Digite baixa, média ou alta.");
 
         Boolean envolveOutrosColegas = validateYesNoInput("A tarefa envolve outros colegas? (Sim ou Não): ", "Digite sim ou não");
         String colegasDeTarefa = "";
 
         if (envolveOutrosColegas) {
-            colegasDeTarefa = validateStringInput("Informe os colegas envolvidos:", "");
+            colegasDeTarefa = validateStringInput("Informe os colegas envolvidos: ", "");
         }
         LocalDateTime dataTarefa=LocalDateTime.of(2024,2,3,0,0);
         while(!workService.isWeekday(dataTarefa)) {
             dataTarefa = validateDateTimeInput(
-                    "Digite data Limite: (formato: dd/MM/yyyy HH:mm):",
+                    "Digite data Limite: (formato: dd/MM/yyyy HH:mm): ",
                     "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm"
             );
             if(!workService.isWeekday(dataTarefa)){
-                System.out.println("É importante ter um tempo de descanso do trabalho, por isso não é permitido marcar tarefas de trabalho no final de semana.");
+                System.out.println("É importante ter um tempo de descanso do trabalho, por isso não é permitido marcar tarefas de trabalho no final de semana.\n");
             }
         }
         System.out.print( workService.envolveMaisPessoas(envolveOutrosColegas,"Não se esqueça de comunicar seus colegas dessa tarefa\n"));

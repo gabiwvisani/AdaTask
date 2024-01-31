@@ -25,7 +25,7 @@ public class PersonalController implements ControllerBase<PersonalTask> {
                     "3 - Quantidade de minutos necessários para concluir a tarefa\n" +
                     "4 - Prioridade (baixa, média, alta)\n" +
                     "5 - Task Envolve outras pessoas(S/N)\n6 -Pessoas envolvidas\n" +
-                    "7 - A tarefa está finalizada (Sim ou Não)\n",
+                    "7 - A tarefa está finalizada (Sim ou Não)\n\n",
                     "Opção inválida.\n");
            switch (campo){
                case 1:
@@ -33,7 +33,7 @@ public class PersonalController implements ControllerBase<PersonalTask> {
                    task.setDescricao(novaDescricao);
                    break;
                case 2:
-                   LocalDateTime dataTarefa = validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm):", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
+                   LocalDateTime dataTarefa = validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm): ", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
                    task.setDataTask(dataTarefa);
                    break;
                case 3:
@@ -67,7 +67,7 @@ public class PersonalController implements ControllerBase<PersonalTask> {
                    throw new IllegalStateException("Valor inválido no campo " + campo);
 
            }
-                continuarEditar =validateYesNoInput("Editar mais campos? (Sim ou não).", "");
+                continuarEditar =validateYesNoInput("Editar mais campos? (Sim ou não).\n", "");
             }
             return task;
         } else {
@@ -91,7 +91,7 @@ public class PersonalController implements ControllerBase<PersonalTask> {
         if (personalService.getTasksList().isEmpty()) {
             System.out.println("Não há tarefas pessoais cadastradas.");
         } else {
-            System.out.println("Tarefas pessoais cadastradas:");
+            System.out.println("Tarefas pessoais cadastradas: ");
             for (PersonalTask task : personalService.getTasksList()) {
                 exibirInformacoesTarefa(task);
             }
@@ -113,11 +113,11 @@ public class PersonalController implements ControllerBase<PersonalTask> {
     public void adicionarTarefa(){
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Criando uma tarefa pessoal:");
+        System.out.println("Criando uma tarefa pessoal: ");
 
-        String descricao = validateStringInput("Informe a descrição da tarefa:","");
+        String descricao = validateStringInput("Informe a descrição da tarefa: ","");
 
-        int quantidadeMinutos = validatePositiveIntegerInput("Informe a quantidade de minutos para a tarefa:","Digite um número inteiro");
+        int quantidadeMinutos = validatePositiveIntegerInput("Informe a quantidade de minutos para a tarefa: ","Digite um número inteiro");
 
         String prioridade = validateStringPrioridadeInput("Informe a prioridade da tarefa (baixa, média, alta): ","Digite baixa, média ou alta.");
 
@@ -125,10 +125,10 @@ public class PersonalController implements ControllerBase<PersonalTask> {
 
         String pessoasEnvolvidas ="";
         if (envolveOutrasPessoas) {
-             pessoasEnvolvidas = validateStringInput("Informe as pessoas envolvidas:","");
+             pessoasEnvolvidas = validateStringInput("Informe as pessoas envolvidas: ","");
         }
 
-        LocalDateTime dataTarefa =  validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm):", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
+        LocalDateTime dataTarefa =  validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm): ", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm\n");
         System.out.print( personalService.envolveMaisPessoas(envolveOutrasPessoas,"Não se esqueça de comunicar os outros envolvidos dessa nova tarefa\n"));
 
         PersonalTask personalTask =  new PersonalTask(envolveOutrasPessoas, pessoasEnvolvidas, 0, dataTarefa, descricao, quantidadeMinutos, prioridade, false);

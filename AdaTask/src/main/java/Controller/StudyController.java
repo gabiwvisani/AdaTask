@@ -23,8 +23,8 @@ public class StudyController implements ControllerBase<StudyTask> {
                             ": \n1 - Descrição da tarefa\n2 - Data Limite\n" +
                             "3 - Quantidade de minutos necessários para concluir a tarefa\n" +
                             "4 - Prioridade (baixa, média, alta)\n5 - Matéria\n" +
-                            "6 - A tarefa está finalizada (Sim ou Não)",
-                    "Opção inválida.");
+                            "6 - A tarefa está finalizada (Sim ou Não)\n",
+                    "Opção inválida.\n");
                 switch (campo) {
                     case 1:
                         System.out.println("Nova descrição: ");
@@ -32,7 +32,7 @@ public class StudyController implements ControllerBase<StudyTask> {
                         task.setDescricao(novaDescricao);
                         break;
                     case 2:
-                        LocalDateTime dataTarefa = validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm):", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
+                        LocalDateTime dataTarefa = validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm): ", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
                         task.setDataTask(dataTarefa);
                         break;
                     case 3:
@@ -59,7 +59,7 @@ public class StudyController implements ControllerBase<StudyTask> {
             }
             return task;
         } else {
-            System.out.println("Tarefa de estudo não encontrada para edição.");
+            System.out.println("Tarefa de estudo não encontrada para edição.\n ");
             return null;
         }
     }
@@ -71,13 +71,13 @@ public class StudyController implements ControllerBase<StudyTask> {
         }
     }
     public void negarDeletarTarefa(){
-        System.out.println("Por favor digite um idTarefa que exista.");
+        System.out.println("Por favor digite um id que exista.\n");
     }
     public void verificarTarefa() {
         if (studyService.getTasksList().isEmpty()) {
-            System.out.println("Não há tarefas de estudo cadastradas.");
+            System.out.println("Não há tarefas de estudo cadastradas.\n");
         } else {
-            System.out.println("Tarefas de estudo cadastradas:");
+            System.out.println("Tarefas de estudo cadastradas: ");
             for (StudyTask task : studyService.getTasksList()) {
                 exibirInformacoesTarefa(task);
             }
@@ -97,18 +97,16 @@ public class StudyController implements ControllerBase<StudyTask> {
     public void adicionarTarefa(){
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Criando uma tarefa de estudo:");
-        String descricao = validateStringInput("Informe a descrição da tarefa:","");
+        System.out.println("Criando uma tarefa de estudo: ");
+        String descricao = validateStringInput("Informe a descrição da tarefa: ","");
 
-        int quantidadeMinutos = validatePositiveIntegerInput("Informe a quantidade de minutos para a tarefa:","Digite um número inteiro");
+        int quantidadeMinutos = validatePositiveIntegerInput("Informe a quantidade de minutos para a tarefa: ","Digite um número inteiro");
 
         String prioridade = validateStringPrioridadeInput("Informe a prioridade da tarefa (baixa, média, alta): ","Digite baixa, média ou alta.");
 
-        scanner.nextLine();  // Consumir a quebra de linha pendente
+        String materia = validateStringInput("Informe a matéria de estudo: ","");
 
-        String materia = validateStringInput("Informe a matéria de estudo:","");
-
-        LocalDateTime dataTarefa =  validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm):", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
+        LocalDateTime dataTarefa =  validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm): ", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
 
         StudyTask studyTask =   new StudyTask(materia, 0, dataTarefa, descricao, quantidadeMinutos, prioridade, false);
 
