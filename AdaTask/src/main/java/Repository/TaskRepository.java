@@ -1,8 +1,6 @@
 package Repository;
 
 import Domain.BaseTask;
-
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,7 +10,6 @@ abstract public class TaskRepository<T extends BaseTask>  {
         list.add(task);
         System.out.println("Task adicionada com sucesso.");
     }
-    //@Override
     public void deletar(Integer idTask, List<T> list) {
         Iterator<T> iterator = list.iterator();
         while (iterator.hasNext()) {
@@ -23,11 +20,6 @@ abstract public class TaskRepository<T extends BaseTask>  {
                 return;
             }
         }
-    }
-
-    public void editar(T task, List<T> list) {
-        //editar();
-        System.out.println("editado");
     }
 
     public  T getTaskById(Integer idTask,  List<T> list) {

@@ -17,15 +17,10 @@ public class StudyService implements Service<StudyTask>{
 
     public void adicionarTask(StudyTask task,  List<StudyTask> list) {
         taskRepository.adicionar(task, list);
-        System.out.println("Task adicionada com sucesso.");
     }
 
     public  void deletarTask(Integer idTask, List<StudyTask> taskList) {
-      //  if (validacaoDeletar(idTask,taskList )) {
             taskRepository.deletar(idTask,taskList);
-       // } else {
-        //    mainInstance.negarDeletarTarefa();
-      //  }
     }
 
     public  Boolean validacaoDeletar(Integer idTask, List<StudyTask> list) {

@@ -1,13 +1,10 @@
 package Service;
 
-import Controller.Main;
 import Domain.PersonalTask;
 import Repository.PersonalRepository;
-
-import java.util.ArrayList;
 import java.util.List;
 
-public class PersonalService implements Service<PersonalTask>{
+public class PersonalService implements Service<PersonalTask>, EnvolveMaisPessoas{
     private final PersonalRepository taskRepository;
     public PersonalService(PersonalRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -15,15 +12,10 @@ public class PersonalService implements Service<PersonalTask>{
 
     public void adicionarTask(PersonalTask task,  List<PersonalTask> list) {
         taskRepository.adicionar(task, list);
-        System.out.println("Task adicionada com sucesso.");
     }
 
     public  void deletarTask(Integer idTask, List<PersonalTask> taskList) {
-        //if (validacaoDeletar(idTask,taskList )) {
-            taskRepository.deletar(idTask,taskList);
-       // } else {
-       //     negarDeletarTarefa();
-       // }
+      taskRepository.deletar(idTask,taskList);
     }
 
     public  Boolean validacaoDeletar(Integer idTask, List<PersonalTask> list) {

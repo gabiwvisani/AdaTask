@@ -1,116 +1,80 @@
 package Controller;
 
 import Domain.PersonalTask;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-
-import Repository.PersonalRepository;
-import Repository.TaskRepository;
 import Service.PersonalService;
-
-import javax.sound.midi.ControllerEventListener;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class PersonalController implements ControllerBase<PersonalTask> {
     private final PersonalService personalService;
-   // private final Main app;
 
     public PersonalController(PersonalService personalService) {
         this.personalService = personalService;
-        //this.app = app;
     }
 
-    /*private PersonalTask encontrarTarefa(Integer id, List<PersonalTask> list) {
-        for (PersonalTask task : list) {
-            if (task.getIdTask().equals(id)) {
-                return task;
-            }
-        }
-        return null;
-    }*/
     public  PersonalTask editarTarefa(Integer idEditar) {
         PersonalTask task = encontrarTarefa(idEditar, personalService.getTasksList());
         if (task != null) {
-            Scanner scan =new Scanner(System.in);
-            System.out.println("Escolha um campo para editar a tarefa n"+idEditar+": \n1 - Descricao da tarefa\n2 - Data Limite\n3 - Quantidade de minutos necessários para concluir a tarefa\n4 - Prioridade (baixa, média, alta)\n5 - Task Envolve outras pessoas(S/N)\n6 -Pessoas envolvidas\n7 - A tarefa está finalizada (Sim ou Não)");
-           try {
-               Integer campo = scan.nextInt();
+            System.out.print( personalService.envolveMaisPessoas(task.getEnvolveOutrasPessoas(),"Não se esqueça de comunicar os outros envolvidos dessa mudança de tarefa\n"));
+            Boolean continuarEditar=true;
+            while(continuarEditar){
+            Integer campo =validatePositiveIntegerInput("Escolha um campo para editar a tarefa n"
+                    +idEditar+
+                    ": \n1 - Descricao da tarefa\n2 - Data Limite\n" +
+                    "3 - Quantidade de minutos necessários para concluir a tarefa\n" +
+                    "4 - Prioridade (baixa, média, alta)\n" +
+                    "5 - Task Envolve outras pessoas(S/N)\n6 -Pessoas envolvidas\n" +
+                    "7 - A tarefa está finalizada (Sim ou Não)\n",
+                    "Opção inválida.\n");
            switch (campo){
                case 1:
-                   System.out.println("Nova descrição: ");
-                   String novaDescricao = scan.nextLine();
+                   String novaDescricao = validateStringInput("Nova descrição: ","");
                    task.setDescricao(novaDescricao);
                    break;
                case 2:
-                   LocalDateTime dataTarefa = LocalDateTime.now().minusDays(1);
-                   while(dataTarefa.isBefore(LocalDateTime.now())) {
-                       System.out.println("Nova data Limite: (formato: dd/MM/yyyy HH:mm):");
-                       try {
-                           String dataInput = scan.next();
-                           dataTarefa = LocalDateTime.parse(dataInput, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-                       }catch(Exception e) {
-                           System.out.println("Digite seguindo o formato formato: dd/MM/yyyy HH:mm");
-                       }
-                       if(dataTarefa.isBefore(LocalDateTime.now())) {
-                        System.out.println("A data deve ser maior o igual a atual");
-                        }
-                   }
+                   LocalDateTime dataTarefa = validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm):", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
                    task.setDataTask(dataTarefa);
                    break;
                case 3:
-                   Integer novaQuantidadeMinutosTask=-1;
-                   while(novaQuantidadeMinutosTask<0) {
-                       System.out.println("Quantidade de minutos necessários para concluir a tarefa: ");
-                       try {
-                           novaQuantidadeMinutosTask = scan.nextInt();
-                       }catch(Exception e) {
-                           System.out.println("Digite um inteiro maior ou igual a 0.");
-                       }
-                       if(novaQuantidadeMinutosTask<0) {
-                           System.out.println("Digite um inteiro maior ou igual a 0.");
-                       }
-                   }
+                   Integer novaQuantidadeMinutosTask=validatePositiveIntegerInput("Quantidade de minutos necessários para concluir a tarefa: ","Digite um inteiro maior ou igual a 0.");
                    task.setQuantidadeMinutosTask(novaQuantidadeMinutosTask);
                    break;
                case 4:
-                   String novaprioridade ="";
-                   while(novaprioridade.equals("")) {
-                       System.out.println("Prioridade (baixa, média, alta): ");
-                       novaprioridade = scan.nextLine();
-                       if(!personalService.validacaoPrioricade(novaprioridade)){
-                            System.out.println("Digite baixa, média ou alta.");
-                            novaprioridade ="";
-                       }
-                   }
+                   String novaprioridade =validateStringPrioridadeInput("Prioridade (baixa, média, alta): ","Digite baixa, média ou alta.");
                    task.setPrioridade(novaprioridade);
                    break;
                case 5:
+                   Boolean envolveOutrasPessoasInput=validateYesNoInput("Task envolve outras pessoas? (Sim ou Não): ","Digite sim ou não");
+                   task.setEnvolveOutrasPessoas(envolveOutrasPessoasInput);
                    break;
                case 6:
+                   if(task.getEnvolveOutrasPessoas()==false){
+                       System.out.println("primeiro você deve alterar o parametro de que há outras pessoas, para inserir as pessoas envolvidas.");
+                       editarTarefa(idEditar);
+                       break;
+                   }
+                   System.out.print( personalService.envolveMaisPessoas(task.getEnvolveOutrasPessoas(),"Não se esqueça de comunicar os novos envolvidos dessa tarefa\n"));
+                   String pessoasEnvolvidas=validateStringInput("Pessoas envolvidas: ","");
+                   task.setPessoasEnvolvidas(pessoasEnvolvidas);
                    break;
                case 7:
+                   Boolean finalizadoInput=validateYesNoInput("A tarefa está finalizada? (Sim ou Não): ","Digite sim ou não");
+                   task.setFinalizado(finalizadoInput);
                    break;
                default:
+                   editarTarefa(idEditar);
                    throw new IllegalStateException("Valor inválido no campo " + campo);
+
            }
-           }catch(Exception e){
-               System.out.println("Opção inválida.");
-               editarTarefa( idEditar);
-           }
+                continuarEditar =validateYesNoInput("Editar mais campos? (Sim ou não).", "");
+            }
             return task;
         } else {
             System.out.println("Tarefa pessoal não encontrada para edição.");
             return null;
         }
     }
-
-    // Métodos auxiliares
 
     public void deletarTarefa(Integer idDeletar) {
         if(personalService.validacaoDeletar(idDeletar, personalService.getTasksList() )) {
@@ -121,7 +85,6 @@ public class PersonalController implements ControllerBase<PersonalTask> {
     }
     public void negarDeletarTarefa(){
         System.out.println("Por favor digite um idTarefa que exista.");
-        //app.deletarTask();
     }
 
     public void verificarTarefa(){
@@ -140,9 +103,9 @@ public class PersonalController implements ControllerBase<PersonalTask> {
         System.out.println("Descrição: " + task.getDescricao());
         System.out.println("Minutos: " + task.getQuantidadeMinutosTask());
         System.out.println("Prioridade: " + task.getPrioridade());
-        System.out.println("Envolvendo outras pessoas: " + task.getEnvolveOutrasPessoas());
+        System.out.println("Envolvendo outras pessoas: " + (task.getEnvolveOutrasPessoas() ? "Sim" : "Não"));
         System.out.println("Pessoas envolvidas: " + task.getPessoasEnvolvidas());
-        System.out.println("Data da tarefa: " + task.getDataTask());
+        System.out.println("Data da tarefa: " + task.getDataTask().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
         System.out.println("Finalizado: " + task.getFinalizado());
         System.out.println("----------------------------------");
     }
@@ -151,41 +114,22 @@ public class PersonalController implements ControllerBase<PersonalTask> {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Criando uma tarefa pessoal:");
-        System.out.println("Informe a descrição da tarefa:");
-        String descricao = scanner.nextLine();
 
-        System.out.println("Informe a quantidade de minutos para a tarefa:");
-        int quantidadeMinutos = scanner.nextInt();
+        String descricao = validateStringInput("Informe a descrição da tarefa:","");
 
-        System.out.println("Informe a prioridade da tarefa:");
-        String prioridade = scanner.next();
+        int quantidadeMinutos = validatePositiveIntegerInput("Informe a quantidade de minutos para a tarefa:","Digite um número inteiro");
 
-        System.out.println("A tarefa envolve outras pessoas? (true/false):");
-        boolean envolveOutrasPessoas = scanner.nextBoolean();
+        String prioridade = validateStringPrioridadeInput("Informe a prioridade da tarefa (baixa, média, alta): ","Digite baixa, média ou alta.");
 
-        String pessoasEnvolvidas = "";
+        Boolean envolveOutrasPessoas=validateYesNoInput("Task envolve outras pessoas? (Sim ou Não): ","Digite sim ou não");
+
+        String pessoasEnvolvidas ="";
         if (envolveOutrasPessoas) {
-            System.out.println("Informe as pessoas envolvidas:");
-            scanner.nextLine();
-            pessoasEnvolvidas = scanner.nextLine();
+             pessoasEnvolvidas = validateStringInput("Informe as pessoas envolvidas:","");
         }
 
-        LocalDateTime dataTarefa = null;
-        boolean dataValida = false;
-
-        while (!dataValida) {
-            try {
-                String dataInput = scanner.nextLine();
-                dataTarefa = LocalDateTime.parse(dataInput, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-                if (dataTarefa.isAfter(LocalDateTime.now()) || dataTarefa.isEqual(LocalDateTime.now())) {
-                    dataValida = true;
-                } else {
-                    System.out.println("A data e hora informadas devem ser maiores ou iguais à data e hora atual. Tente novamente:");
-                }
-            } catch (Exception e) {
-                System.out.println("Formato de data e hora inválido. Tente novamente (formato: dd/MM/yyyy HH:mm):");
-            }
-        }
+        LocalDateTime dataTarefa =  validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm):", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
+        System.out.print( personalService.envolveMaisPessoas(envolveOutrasPessoas,"Não se esqueça de comunicar os outros envolvidos dessa nova tarefa\n"));
 
         PersonalTask personalTask =  new PersonalTask(envolveOutrasPessoas, pessoasEnvolvidas, 0, dataTarefa, descricao, quantidadeMinutos, prioridade, false);
         personalService.adicionarTask(personalTask, personalService.getTasksList());

@@ -1,34 +1,65 @@
 package Controller;
 
-import Domain.PersonalTask;
 import Domain.StudyTask;
-import Repository.TaskRepository;
-import Service.PersonalService;
 import Service.StudyService;
-//import Service.TaskService;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class StudyController implements ControllerBase<StudyTask> {
     private final StudyService studyService;
-   // private final Main app;
 
     public StudyController(StudyService studyService) {
         this.studyService = studyService;
-       // this.app = app;
     }
-    public  StudyTask editarTarefa(Integer idEditar) {
+    public StudyTask editarTarefa(Integer idEditar) {
         StudyTask task = encontrarTarefa(idEditar, studyService.getTasksList());
         if (task != null) {
-            //editaDescricao();
+            Boolean continuarEditar=true;
+            while(continuarEditar){
+            Integer campo =validatePositiveIntegerInput("Escolha um campo para editar a tarefa n"
+                            +idEditar+
+                            "Escolha um campo para editar a tarefa n" + idEditar +
+                            ": \n1 - Descrição da tarefa\n2 - Data Limite\n" +
+                            "3 - Quantidade de minutos necessários para concluir a tarefa\n" +
+                            "4 - Prioridade (baixa, média, alta)\n5 - Matéria\n" +
+                            "6 - A tarefa está finalizada (Sim ou Não)",
+                    "Opção inválida.");
+                switch (campo) {
+                    case 1:
+                        System.out.println("Nova descrição: ");
+                        String novaDescricao = validateStringInput("Nova descrição: ", "");
+                        task.setDescricao(novaDescricao);
+                        break;
+                    case 2:
+                        LocalDateTime dataTarefa = validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm):", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
+                        task.setDataTask(dataTarefa);
+                        break;
+                    case 3:
+                        Integer novaQuantidadeMinutosTask = validatePositiveIntegerInput("Quantidade de minutos necessários para concluir a tarefa: ", "Digite um inteiro maior ou igual a 0.");
+                        task.setQuantidadeMinutosTask(novaQuantidadeMinutosTask);
+                        break;
+                    case 4:
+                        String novaPrioridade = validateStringPrioridadeInput("Prioridade (baixa, média, alta): ", "Digite baixa, média ou alta.");
+                        task.setPrioridade(novaPrioridade);
+                        break;
+                    case 5:
+                        String novaMateria = validateStringInput("Nova matéria: ", "");
+                        task.setMateria(novaMateria);
+                        break;
+                    case 6:
+                        Boolean finalizadoInput=validateYesNoInput("A tarefa está finalizada? (Sim ou Não): ","Digite sim ou não");
+                        task.setFinalizado(finalizadoInput);
+                        break;
+                    default:
+                        editarTarefa(idEditar);
+                        throw new IllegalStateException("Valor inválido no campo " + campo);
+            }
+                continuarEditar =validateYesNoInput("Editar mais campos? (Sim ou não).", "");
+            }
             return task;
         } else {
-            System.out.println("Tarefa não encontrada para edição.");
+            System.out.println("Tarefa de estudo não encontrada para edição.");
             return null;
         }
     }
@@ -41,7 +72,6 @@ public class StudyController implements ControllerBase<StudyTask> {
     }
     public void negarDeletarTarefa(){
         System.out.println("Por favor digite um idTarefa que exista.");
-       // app.deletarTask();
     }
     public void verificarTarefa() {
         if (studyService.getTasksList().isEmpty()) {
@@ -60,7 +90,7 @@ public class StudyController implements ControllerBase<StudyTask> {
         System.out.println("Minutos: " + task.getQuantidadeMinutosTask());
         System.out.println("Prioridade: " + task.getPrioridade());
         System.out.println("Matéria: " + task.getMateria());
-        System.out.println("Data da tarefa: " + task.getDataTask());
+        System.out.println("Data da tarefa: " + task.getDataTask().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
         System.out.println("Finalizado: " + task.getFinalizado());
         System.out.println("----------------------------------");
     }
@@ -68,25 +98,17 @@ public class StudyController implements ControllerBase<StudyTask> {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Criando uma tarefa de estudo:");
-        System.out.println("Informe a descrição da tarefa:");
-        String descricao = scanner.nextLine();
+        String descricao = validateStringInput("Informe a descrição da tarefa:","");
 
-        System.out.println("Informe a quantidade de minutos para a tarefa:");
-        int quantidadeMinutos = scanner.nextInt();
+        int quantidadeMinutos = validatePositiveIntegerInput("Informe a quantidade de minutos para a tarefa:","Digite um número inteiro");
 
-        System.out.println("Informe a prioridade da tarefa:");
-        String prioridade = scanner.next();
+        String prioridade = validateStringPrioridadeInput("Informe a prioridade da tarefa (baixa, média, alta): ","Digite baixa, média ou alta.");
 
         scanner.nextLine();  // Consumir a quebra de linha pendente
 
-        System.out.println("Informe a matéria de estudo:");
-        String materia = scanner.nextLine();
+        String materia = validateStringInput("Informe a matéria de estudo:","");
 
-        System.out.println("Informe a data limite da tarefa (formato: dd/MM/yyyy):");
-        String dataInput = scanner.next();
-        dataInput=dataInput +" 00:00";
-        LocalDateTime dataTarefa = LocalDateTime.parse(dataInput, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-
+        LocalDateTime dataTarefa =  validateDateTimeInput("Nova data Limite: (formato: dd/MM/yyyy HH:mm):", "Digite uma data maior ou igual a atual seguindo o formato formato: dd/MM/yyyy HH:mm");
 
         StudyTask studyTask =   new StudyTask(materia, 0, dataTarefa, descricao, quantidadeMinutos, prioridade, false);
 

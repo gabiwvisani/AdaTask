@@ -1,15 +1,12 @@
 package Service;
 
-import Controller.Main;
-import Domain.PersonalTask;
 import Domain.WorkTask;
-import Repository.StudyRepository;
 import Repository.WorkRepository;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 
-public class WorkService implements Service<WorkTask>{
+public class WorkService implements Service<WorkTask>, EnvolveMaisPessoas{
     private final WorkRepository taskRepository;
     public WorkService(WorkRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -19,13 +16,13 @@ public class WorkService implements Service<WorkTask>{
         taskRepository.adicionar(task, list);
         System.out.println("Task adicionada com sucesso.");
     }
+    public  boolean isWeekday(LocalDateTime dateTime) {
+        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
+    }
 
     public  void deletarTask(Integer idTask, List<WorkTask> taskList) {
-       // if (validacaoDeletar(idTask,taskList )) {
             taskRepository.deletar(idTask,taskList);
-       // } else {
-       //     mainInstance.negarDeletarTarefa();
-      //  }
     }
 
     public  Boolean validacaoDeletar(Integer idTask, List<WorkTask> list) {
